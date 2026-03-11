@@ -13,6 +13,7 @@ SUB Main
     PRINT a / b
     PRINT a \ b
     PRINT a ^ b
+    PRINT d MOD e
 
     LET x = a + b - c * d / e ^ f
     LET y = a ^ b ^ c ^ d ^ e ^ f

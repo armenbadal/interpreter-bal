@@ -33,13 +33,14 @@ const (
 	xEnd        // END
 
 	// գործողություններ
-	xAdd // +
-	xSub // -
-	xAmp // &
-	xMul // *
-	xDiv // /
-	xMod // \
-	xPow // ^
+	xAdd  // +
+	xSub  // -
+	xAmp  // &
+	xMul  // *
+	xDiv  // /
+	xQuot // \
+	xMod  // MOD
+	xPow  // ^
 
 	xEq // =
 	xNe // <>
