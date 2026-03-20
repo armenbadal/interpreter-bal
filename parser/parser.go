@@ -588,7 +588,7 @@ func (p *Parser) parseMultiplication() (ast.Expression, error) {
 		return nil, err
 	}
 
-	for p.has(xMul, xDiv, xMod) {
+	for p.has(xMul, xDiv, xQuot, xMod) {
 		opc := p.lookahead.value
 		p.next() // '*', '/', '\'
 		right, err := p.parsePower()

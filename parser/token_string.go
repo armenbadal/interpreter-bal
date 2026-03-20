@@ -34,29 +34,30 @@ func _() {
 	_ = x[xAmp-23]
 	_ = x[xMul-24]
 	_ = x[xDiv-25]
-	_ = x[xMod-26]
-	_ = x[xPow-27]
-	_ = x[xEq-28]
-	_ = x[xNe-29]
-	_ = x[xGt-30]
-	_ = x[xGe-31]
-	_ = x[xLt-32]
-	_ = x[xLe-33]
-	_ = x[xAnd-34]
-	_ = x[xOr-35]
-	_ = x[xNot-36]
-	_ = x[xNewLine-37]
-	_ = x[xLeftPar-38]
-	_ = x[xRightPar-39]
-	_ = x[xLeftBr-40]
-	_ = x[xRightBr-41]
-	_ = x[xComma-42]
-	_ = x[xEof-43]
+	_ = x[xQuot-26]
+	_ = x[xMod-27]
+	_ = x[xPow-28]
+	_ = x[xEq-29]
+	_ = x[xNe-30]
+	_ = x[xGt-31]
+	_ = x[xGe-32]
+	_ = x[xLt-33]
+	_ = x[xLe-34]
+	_ = x[xAnd-35]
+	_ = x[xOr-36]
+	_ = x[xNot-37]
+	_ = x[xNewLine-38]
+	_ = x[xLeftPar-39]
+	_ = x[xRightPar-40]
+	_ = x[xLeftBr-41]
+	_ = x[xRightBr-42]
+	_ = x[xComma-43]
+	_ = x[xEof-44]
 }
 
-const _token_name = "xNoneթիվտեքստիդենտիֆիկատորTRUEFALSESUBDIMLETINPUTPRINTIFTHENELSEIFELSEWHILEFORTOSTEPCALLEND+-&*/\\^=<>>>=<<=ANDORNOT<-/()[],ֆայլի վերջը"
+const _token_name = "xNoneթիվտեքստիդենտիֆիկատորTRUEFALSESUBDIMLETINPUTPRINTIFTHENELSEIFELSEWHILEFORTOSTEPCALLEND+-&*/\\MOD^=<>>>=<<=ANDORNOT<-/()[],ֆայլի վերջը"
 
-var _token_index = [...]uint8{0, 5, 11, 21, 47, 51, 56, 59, 62, 65, 70, 75, 77, 81, 87, 91, 96, 99, 101, 105, 109, 112, 113, 114, 115, 116, 117, 118, 119, 120, 122, 123, 125, 126, 128, 131, 133, 136, 139, 140, 141, 142, 143, 144, 165}
+var _token_index = [...]uint8{0, 5, 11, 21, 47, 51, 56, 59, 62, 65, 70, 75, 77, 81, 87, 91, 96, 99, 101, 105, 109, 112, 113, 114, 115, 116, 117, 118, 121, 122, 123, 125, 126, 128, 129, 131, 134, 136, 139, 142, 143, 144, 145, 146, 147, 168}
 
 func (i token) String() string {
 	idx := int(i) - 0
