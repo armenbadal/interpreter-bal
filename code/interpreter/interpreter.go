@@ -147,7 +147,7 @@ func (i *interpreter) evaluateUnary(u *ast.Unary) (*value, error) {
 
 func (i *interpreter) evaluateBinary(b *ast.Binary) (*value, error) {
 	switch b.Operation {
-	case "+", "-", "*", "/", "\\", "^":
+	case "+", "-", "*", "/", "\\", "MOD", "^":
 		return i.evaluateArithmetic(b)
 	case "&":
 		return i.evaluateTextConcatenation(b)
@@ -159,7 +159,7 @@ func (i *interpreter) evaluateBinary(b *ast.Binary) (*value, error) {
 		return i.evaluateComparison(b)
 	}
 
-	return nil, fmt.Errorf("անծանոթ երկտեղանի գործողություն")
+	return nil, fmt.Errorf("անծանոթ երկտեղանի գործողություն '%s'", b.Operation)
 }
 
 // թվաբանական գործողություններ
