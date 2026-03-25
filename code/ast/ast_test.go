@@ -17,7 +17,7 @@ func TestPrimitives(t *testing.T) {
 	}
 }
 
-func TestArrayLiteral(t *testing.T) {
+func TestArrayDefinition(t *testing.T) {
 	a0 := &Array{[]Expression{&Boolean{true}, &Boolean{false}, &Boolean{true}}}
 	if a0.String() != "[TRUE, FALSE, TRUE]" {
 		t.Error("failed")
