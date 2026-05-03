@@ -6,23 +6,31 @@ import (
 )
 
 func (p *Program) String() string {
-	var text string
+	var text strings.Builder
 	for _, sb := range p.Subroutines {
-		text += fmt.Sprint(sb)
-		text += "\n\n"
+		fmt.Fprint(&text, sb)
+		text.WriteString("\n\n")
 	}
-	return text
+	return text.String()
 }
 
 func (s *Subroutine) String() string {
 	indent()
 	defer unindent()
 
-	text := "subroutine:\n"
-	text += fmt.Sprintf("%sname: %s\n", spaces, s.Name)
-	text += fmt.Sprintf("%sparameters: [%s]\n", spaces, strings.Join(s.Parameters, ","))
-	text += fmt.Sprintf("%sbody:\n%s", spaces, s.Body)
-	return text
+	var text strings.Builder
+	fmt.Fprintln(&text, "subroutine:")
+	fmt.Fprintf(&text, "%sname: '%s'\n", spaces, s.Name)
+	fmt.Fprintf(&text, "%sparameters: [", spaces)
+	for i, p := range s.Parameters {
+		if i > 0 {
+			text.WriteString(", ")
+		}
+		fmt.Fprintf(&text, "'%s'", p)
+	}
+	text.WriteString("]\n")
+	fmt.Fprintf(&text, "%sbody:\n%s", spaces, s.Body)
+	return text.String()
 }
 
 func (s *Sequence) String() string {
@@ -41,10 +49,11 @@ func (d *Dim) String() string {
 	indent()
 	defer unindent()
 
-	text := "dim:\n"
+	text := spaces + "dim:\n"
 	indent()
-	text += fmt.Sprintf("%sname: %s\n", spaces, d.Name)
-	text += fmt.Sprintf("%ssize: %d", spaces, d.Size)
+	text += fmt.Sprintf("%sname: '%s'\n", spaces, d.Name)
+	text += fmt.Sprintf("%ssize:\n", spaces)
+	text += fmt.Sprintf("%s", d.Size)
 	unindent()
 
 	return text
@@ -119,6 +128,7 @@ func (f *For) String() string {
 	defer unindent()
 
 	text := spaces + "for:\n"
+	indent()
 	text += fmt.Sprintf("%sparameter:\n%s", spaces, f.Parameter)
 	text += fmt.Sprintf("%sbegin:\n%s", spaces, f.Begin)
 	text += fmt.Sprintf("%send:\n%s", spaces, f.End)
@@ -176,7 +186,7 @@ func (u *Unary) String() string {
 	var text strings.Builder
 	fmt.Fprintf(&text, "%sunary\n", spaces)
 	fmt.Fprintf(&text, "%soperation: '%s'\n", spaces, u.Operation)
-	fmt.Fprintf(&text, "%sleft:\n%s", spaces, u.Right)
+	fmt.Fprintf(&text, "%sright:\n%s", spaces, u.Right)
 	unindent()
 
 	return text.String()
