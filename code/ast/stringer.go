@@ -140,24 +140,23 @@ func (f *For) String() string {
 }
 
 func (c *Call) String() string {
-	return applyHelper("call", c.Arguments)
+	return applyHelper("call", c.Callee, c.Arguments)
 }
 
 func (a *Apply) String() string {
-	return applyHelper("apply", a.Arguments)
+	return applyHelper("apply", a.Callee, a.Arguments)
 }
 
-func applyHelper(name string, args []Expression) string {
+func applyHelper(name, callee string, args []Expression) string {
 	indent()
 	defer unindent()
 
 	var text strings.Builder
 	fmt.Fprintf(&text, "%s%s:\n", spaces, name)
 	indent()
+	fmt.Fprintf(&text, "%scallee: '%s'\n", spaces, callee)
 	for i, e := range args {
-		indent()
 		fmt.Fprintf(&text, "%sargument[%d]:\n%s", spaces, i, e)
-		unindent()
 	}
 	unindent()
 
@@ -185,6 +184,7 @@ func (u *Unary) String() string {
 
 	var text strings.Builder
 	fmt.Fprintf(&text, "%sunary\n", spaces)
+	indent()
 	fmt.Fprintf(&text, "%soperation: '%s'\n", spaces, u.Operation)
 	fmt.Fprintf(&text, "%sright:\n%s", spaces, u.Right)
 	unindent()
