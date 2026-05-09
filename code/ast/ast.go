@@ -52,7 +52,7 @@ type While struct {
 
 // For Հաշվիչով ցիկլ
 type For struct {
-	Parameter Expression // հաշվիչը
+	Parameter *Variable  // հաշվիչը
 	Begin     Expression // հաշվիչի սկզբնական արժեք
 	End       Expression // հաշվիջի վերջնական արժեք
 	Step      Expression // հաշվիչի քայլը

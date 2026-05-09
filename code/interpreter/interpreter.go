@@ -489,17 +489,14 @@ func (i *interpreter) executeWhile(w *ast.While) error {
 }
 
 func (i *interpreter) executeFor(f *ast.For) error {
-	paramVar, ok := f.Parameter.(*ast.Variable)
-	if !ok {
-		return fmt.Errorf("FOR հրամանի պարամետրը պետք է լինի փոփոխական")
-	}
-	param := paramVar.Name
+	param := f.Parameter.Name
+
 	begin, err := i.evaluate(f.Begin)
 	if err != nil {
 		return err
 	}
 	if !begin.isNumber() {
-		return fmt.Errorf("FOR հրամանի պարամետրի արժեքը պետք է լինի թիվ")
+		return fmt.Errorf("FOR հրամանի պարամետրի սկզբնական արժեքը պետք է լինի թիվ")
 	}
 	i.env.set(param, begin.clone())
 
@@ -508,7 +505,7 @@ func (i *interpreter) executeFor(f *ast.For) error {
 		return err
 	}
 	if !end.isNumber() {
-		return fmt.Errorf("FOR հրամանի պարամետրի արժեքը պետք է լինի թիվ")
+		return fmt.Errorf("FOR հրամանի պարամետրի վերջնական արժեքը պետք է լինի թիվ")
 	}
 
 	step, err := i.evaluate(f.Step)
