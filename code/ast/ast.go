@@ -59,7 +59,7 @@ type For struct {
 	Body      Statement  // մարմինը
 }
 
-// Call Ենթածրագիր կանչ, նույնն է թե Apply
+// Call Ենթածրագրի կանչ, նույնն է թե Apply
 type Call Apply
 
 // Sequence Հրամանների հաջորդականություն
