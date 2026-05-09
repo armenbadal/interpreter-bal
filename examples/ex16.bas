@@ -1,0 +1,6 @@
+SUB P0
+END SUB
+
+SUB Main
+    PRINT P0()
+END SUB
