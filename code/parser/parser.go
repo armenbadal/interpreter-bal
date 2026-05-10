@@ -185,7 +185,7 @@ func (p *Parser) parseStatement() (ast.Statement, error) {
 // Վերլուծել զանգվածի սահմանման հրամանը
 //
 // Statement = 'DIM' IDENT '[' Expression ']'.
-func (p *Parser) parseDim() (ast.Statement, error) {
+func (p *Parser) parseDim() (*ast.Dim, error) {
 	p.next() // DIM
 	name, err := p.match(xIdent)
 	if err != nil {
@@ -209,7 +209,7 @@ func (p *Parser) parseDim() (ast.Statement, error) {
 // Վերլուծել վերագրման հրամանը
 //
 // Statement = 'LET' IDENT ['[' Expression ']'] '=' Expression.
-func (p *Parser) parseLet() (ast.Statement, error) {
+func (p *Parser) parseLet() (*ast.Let, error) {
 	p.next() // LET
 	name, err := p.match(xIdent)
 	if err != nil {
@@ -244,7 +244,7 @@ func (p *Parser) parseLet() (ast.Statement, error) {
 // Ներմուծման հրամանի վերլուծությունը.
 //
 // Statement = 'INPUT' IDENT.
-func (p *Parser) parseInput() (ast.Statement, error) {
+func (p *Parser) parseInput() (*ast.Input, error) {
 	p.next() // INPUT
 	name, err := p.match(xIdent)
 	if err != nil {
@@ -257,7 +257,7 @@ func (p *Parser) parseInput() (ast.Statement, error) {
 // Արտածման հրամանի վերլուծությունը.
 //
 // Statement = 'PRINT' Expression.
-func (p *Parser) parsePrint() (ast.Statement, error) {
+func (p *Parser) parsePrint() (*ast.Print, error) {
 	p.next() // PRINT
 	value, err := p.parseExpression()
 	if err != nil {
@@ -269,7 +269,7 @@ func (p *Parser) parsePrint() (ast.Statement, error) {
 // Ճյուղավորման հրամանի վերլուծությունը.
 //
 // Statement = 'IF' Expression 'THEN' Sequence { 'ELSEIF' Expression 'THEN' Sequence } [ 'ELSE' Sequence ] 'END' 'IF'.
-func (p *Parser) parseIf() (ast.Statement, error) {
+func (p *Parser) parseIf() (*ast.If, error) {
 	p.next() // IF
 	cond, err := p.parseExpression()
 	if err != nil {
@@ -325,7 +325,7 @@ func (p *Parser) parseIf() (ast.Statement, error) {
 // Նախապայմանով ցիկլի վերլուծությունը
 //
 // Statement = 'WHILE' Expression Sequence 'END' 'WHILE'.
-func (p *Parser) parseWhile() (ast.Statement, error) {
+func (p *Parser) parseWhile() (*ast.While, error) {
 	p.next() // WHILE
 	condition, err := p.parseExpression()
 	if err != nil {
@@ -350,7 +350,7 @@ func (p *Parser) parseWhile() (ast.Statement, error) {
 // Պարամետրով ցիկլի վերլուծությունը
 //
 // Statement = 'FOR' IDENT '=' Expression 'TO' Expression ['STEP' ['+'|'-'] NUMBER] Sequence 'END' 'FOR'.
-func (p *Parser) parseFor() (ast.Statement, error) {
+func (p *Parser) parseFor() (*ast.For, error) {
 	p.next() // FOR
 	name, err := p.match(xIdent)
 	if err != nil {
@@ -420,7 +420,7 @@ func (p *Parser) parseFor() (ast.Statement, error) {
 // Ենթածրագրի կանչի վերլուծությունը
 //
 // Statement = 'CALL' IDENT [Expression {',' Expression}].
-func (p *Parser) parseCall() (ast.Statement, error) {
+func (p *Parser) parseCall() (*ast.Call, error) {
 	p.next() // CALL
 	name, err := p.match(xIdent)
 	if err != nil {
@@ -669,7 +669,7 @@ func (p *Parser) parseSubscript() (ast.Expression, error) {
 
 // Պարզագույն արտահայտությունների վերլուծությունը
 //
-// Factor = TRUE | FALSE | NUMBER | TEXT | ArrayLiteral | IdentOrApply | Grouping.
+// Factor = TRUE | FALSE | NUMBER | TEXT | ArrayDefinition | IdentOrApply | Grouping.
 func (p *Parser) parseFactor() (ast.Expression, error) {
 	switch {
 	case p.has(xTrue, xFalse):
@@ -679,7 +679,7 @@ func (p *Parser) parseFactor() (ast.Expression, error) {
 	case p.has(xText):
 		return p.parseText()
 	case p.has(xLeftBr):
-		return p.parseArrayLiteral()
+		return p.parseArrayDefinition()
 	case p.has(xIdent):
 		return p.parseIdentOrApply()
 	case p.has(xLeftPar):
@@ -715,7 +715,7 @@ func (p *Parser) parseText() (ast.Expression, error) {
 }
 
 // զանգվածի լիտերալ
-func (p *Parser) parseArrayLiteral() (ast.Expression, error) {
+func (p *Parser) parseArrayDefinition() (ast.Expression, error) {
 	p.next() // լիտերալի սկիզբը, '['
 
 	// լիտերալի անդամները
