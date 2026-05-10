@@ -669,7 +669,7 @@ func (p *Parser) parseSubscript() (ast.Expression, error) {
 
 // Պարզագույն արտահայտությունների վերլուծությունը
 //
-// Factor = TRUE | FALSE | NUMBER | TEXT | ArrayLiteral | IdentOrApply | Grouping.
+// Factor = TRUE | FALSE | NUMBER | TEXT | ArrayDefinition | IdentOrApply | Grouping.
 func (p *Parser) parseFactor() (ast.Expression, error) {
 	switch {
 	case p.has(xTrue, xFalse):
@@ -679,7 +679,7 @@ func (p *Parser) parseFactor() (ast.Expression, error) {
 	case p.has(xText):
 		return p.parseText()
 	case p.has(xLeftBr):
-		return p.parseArrayLiteral()
+		return p.parseArrayDefinition()
 	case p.has(xIdent):
 		return p.parseIdentOrApply()
 	case p.has(xLeftPar):
@@ -715,7 +715,7 @@ func (p *Parser) parseText() (ast.Expression, error) {
 }
 
 // զանգվածի լիտերալ
-func (p *Parser) parseArrayLiteral() (ast.Expression, error) {
+func (p *Parser) parseArrayDefinition() (ast.Expression, error) {
 	p.next() // լիտերալի սկիզբը, '['
 
 	// լիտերալի անդամները
