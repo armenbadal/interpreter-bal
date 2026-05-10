@@ -1,42 +1,33 @@
 package ast
 
 import (
-	"strings"
 	"testing"
 )
 
-func TestPrimitives(t *testing.T) {
-	b0 := &Boolean{true}
-	if b0.String() != "TRUE" {
-		t.Error("failed")
+func TestLiterals(t *testing.T) {
+	n0 := &Number{Value: 42}
+	e0 := "  number:\n    value: 42\n"
+	if n0.String() != e0 {
+		t.Fail()
 	}
 
-	b1 := &Boolean{false}
-	if b1.String() != "FALSE" {
-		t.Error("failed")
-	}
-}
-
-func TestArrayDefinition(t *testing.T) {
-	a0 := &Array{[]Expression{&Boolean{true}, &Boolean{false}, &Boolean{true}}}
-	if a0.String() != "[TRUE, FALSE, TRUE]" {
-		t.Error("failed")
-	}
-}
-
-func TestUnary(t *testing.T) {
-	u0 := &Unary{Operation: "-", Right: &Number{Value: 3.14}}
-	s0 := u0.String()
-	if !strings.HasPrefix(s0, "- 3.14") {
-		t.Error("failed")
+	t0 := &Text{Value: "hello"}
+	e1 := "  text:\n    value: \"hello\"\n"
+	if t0.String() != e1 {
+		t.Fail()
 	}
 
-	u1 := &Unary{Operation: "NOT", Right: &Boolean{Value: false}}
-	if u1.String() != "NOT FALSE" {
-		t.Error("failed")
+	b0 := &Boolean{Value: true}
+	e2 := "  boolean:\n    value: true\n"
+	if b0.String() != e2 {
+		t.Fail()
 	}
 }
 
-func TestLet(t *testing.T) {
-
+func TestVariable(t *testing.T) {
+	v0 := &Variable{Name: "x"}
+	e0 := "  variable:\n    name: 'x'\n"
+	if v0.String() != e0 {
+		t.Fail()
+	}
 }

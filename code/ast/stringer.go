@@ -6,44 +6,54 @@ import (
 )
 
 func (p *Program) String() string {
-	var text string
+	var text strings.Builder
 	for _, sb := range p.Subroutines {
-		text += fmt.Sprint(sb)
-		text += "\n\n"
+		fmt.Fprint(&text, sb)
+		text.WriteString("\n\n")
 	}
-	return text
+	return text.String()
 }
 
 func (s *Subroutine) String() string {
 	indent()
 	defer unindent()
 
-	text := "subroutine:\n"
-	text += fmt.Sprintf("%sname: %s\n", spaces, s.Name)
-	text += fmt.Sprintf("%sparameters: [%s]\n", spaces, strings.Join(s.Parameters, ","))
-	text += fmt.Sprintf("%sbody:\n%s", spaces, s.Body)
-	return text
+	var text strings.Builder
+	fmt.Fprintln(&text, "subroutine:")
+	fmt.Fprintf(&text, "%sname: '%s'\n", spaces, s.Name)
+	fmt.Fprintf(&text, "%sparameters: [", spaces)
+	for i, p := range s.Parameters {
+		if i > 0 {
+			text.WriteString(", ")
+		}
+		fmt.Fprintf(&text, "'%s'", p)
+	}
+	text.WriteString("]\n")
+	fmt.Fprintf(&text, "%sbody:\n%s", spaces, s.Body)
+	return text.String()
 }
 
 func (s *Sequence) String() string {
 	indent()
 	defer unindent()
 
-	text := spaces + "sequence:\n"
+	var text strings.Builder
+	fmt.Fprintf(&text, "%ssequence:\n", spaces)
 	for _, e := range s.Items {
-		text += fmt.Sprint(e)
+		fmt.Fprint(&text, e)
 	}
-	return text
+	return text.String()
 }
 
 func (d *Dim) String() string {
 	indent()
 	defer unindent()
 
-	text := "dim:\n"
+	text := spaces + "dim:\n"
 	indent()
-	text += fmt.Sprintf("%sname: %s\n", spaces, d.Name)
-	text += fmt.Sprintf("%ssize: %d", spaces, d.Size)
+	text += fmt.Sprintf("%sname: '%s'\n", spaces, d.Name)
+	text += fmt.Sprintf("%ssize:\n", spaces)
+	text += fmt.Sprintf("%s", d.Size)
 	unindent()
 
 	return text
@@ -118,6 +128,7 @@ func (f *For) String() string {
 	defer unindent()
 
 	text := spaces + "for:\n"
+	indent()
 	text += fmt.Sprintf("%sparameter:\n%s", spaces, f.Parameter)
 	text += fmt.Sprintf("%sbegin:\n%s", spaces, f.Begin)
 	text += fmt.Sprintf("%send:\n%s", spaces, f.End)
@@ -129,53 +140,56 @@ func (f *For) String() string {
 }
 
 func (c *Call) String() string {
-	return applyHelper("call", c.Arguments)
+	return applyHelper("call", c.Callee, c.Arguments)
 }
 
 func (a *Apply) String() string {
-	return applyHelper("apply", a.Arguments)
+	return applyHelper("apply", a.Callee, a.Arguments)
 }
 
-func applyHelper(name string, args []Expression) string {
+func applyHelper(name, callee string, args []Expression) string {
 	indent()
 	defer unindent()
 
-	text := fmt.Sprintf("%s%s:\n", spaces, name)
+	var text strings.Builder
+	fmt.Fprintf(&text, "%s%s:\n", spaces, name)
 	indent()
+	fmt.Fprintf(&text, "%scallee: '%s'\n", spaces, callee)
 	for i, e := range args {
-		indent()
-		text += fmt.Sprintf("%s%d:\n%s", spaces, i, e)
-		unindent()
+		fmt.Fprintf(&text, "%sargument[%d]:\n%s", spaces, i, e)
 	}
 	unindent()
 
-	return text
+	return text.String()
 }
 
 func (b *Binary) String() string {
 	indent()
 	defer unindent()
 
-	text := spaces + "binary\n"
+	var text strings.Builder
+	fmt.Fprintf(&text, "%sbinary\n", spaces)
 	indent()
-	text += fmt.Sprintf("%soperation: %s\n", spaces, b.Operation)
-	text += fmt.Sprintf("%sleft:\n%s", spaces, b.Left)
-	text += fmt.Sprintf("%sright:\n%s", spaces, b.Right)
+	fmt.Fprintf(&text, "%soperation: '%s'\n", spaces, b.Operation)
+	fmt.Fprintf(&text, "%sleft:\n%s", spaces, b.Left)
+	fmt.Fprintf(&text, "%sright:\n%s", spaces, b.Right)
 	unindent()
 
-	return text
+	return text.String()
 }
 
 func (u *Unary) String() string {
 	indent()
 	defer unindent()
 
-	text := spaces + "unary\n"
-	text += fmt.Sprintf("%soperation: %s\n", spaces, u.Operation)
-	text += fmt.Sprintf("%sleft:\n%s", spaces, u.Right)
+	var text strings.Builder
+	fmt.Fprintf(&text, "%sunary\n", spaces)
+	indent()
+	fmt.Fprintf(&text, "%soperation: '%s'\n", spaces, u.Operation)
+	fmt.Fprintf(&text, "%sright:\n%s", spaces, u.Right)
 	unindent()
 
-	return text
+	return text.String()
 }
 
 func (v *Variable) String() string {
@@ -184,7 +198,7 @@ func (v *Variable) String() string {
 
 	text := spaces + "variable:\n"
 	indent()
-	text += fmt.Sprintf("%sname: %v\n", spaces, v.Name)
+	text += fmt.Sprintf("%sname: '%v'\n", spaces, v.Name)
 	unindent()
 	return text
 }
@@ -193,45 +207,49 @@ func (a *Array) String() string {
 	indent()
 	defer unindent()
 
-	els := spaces + "[\n"
+	var els strings.Builder
+	fmt.Fprintf(&els, "%s[\n", spaces)
 	for _, e := range a.Elements {
-		els += fmt.Sprint(e)
+		fmt.Fprint(&els, e)
 	}
-	els += spaces + "]\n"
-	return els
+	fmt.Fprintf(&els, "%s]\n", spaces)
+	return els.String()
 }
 
 func (b *Boolean) String() string {
 	indent()
 	defer unindent()
 
-	text := spaces + "boolean:\n"
+	var text strings.Builder
+	fmt.Fprintf(&text, "%sboolean:\n", spaces)
 	indent()
-	text += fmt.Sprintf("%svalue: %v\n", spaces, b.Value)
+	fmt.Fprintf(&text, "%svalue: %v\n", spaces, b.Value)
 	unindent()
-	return text
+	return text.String()
 }
 
 func (n *Number) String() string {
 	indent()
 	defer unindent()
 
-	text := spaces + "number:\n"
+	var text strings.Builder
+	fmt.Fprintf(&text, "%snumber:\n", spaces)
 	indent()
-	text += fmt.Sprintf("%svalue: %v\n", spaces, n.Value)
+	fmt.Fprintf(&text, "%svalue: %v\n", spaces, n.Value)
 	unindent()
-	return text
+	return text.String()
 }
 
 func (t *Text) String() string {
 	indent()
 	defer unindent()
 
-	text := spaces + "text:\n"
+	var text strings.Builder
+	fmt.Fprintf(&text, "%stext:\n", spaces)
 	indent()
-	text += fmt.Sprintf("%svalue: \"%s\"\n", spaces, t.Value)
+	fmt.Fprintf(&text, "%svalue: \"%s\"\n", spaces, t.Value)
 	unindent()
-	return text
+	return text.String()
 }
 
 var spaces = ""

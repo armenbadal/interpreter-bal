@@ -1,0 +1,35 @@
+subroutine:
+  name: 'Pythagorean'
+  parameters: ['a', 'b']
+  body:
+    sequence:
+      let:
+        place:
+          variable:
+            name: 'Pythagorean'
+        value:
+          apply:
+            callee: 'SQR'
+            argument[0]:
+              binary
+                operation: '+'
+                left:
+                  binary
+                    operation: '^'
+                    left:
+                      variable:
+                        name: 'a'
+                    right:
+                      number:
+                        value: 2
+                right:
+                  binary
+                    operation: '^'
+                    left:
+                      variable:
+                        name: 'b'
+                    right:
+                      number:
+                        value: 2
+
+
